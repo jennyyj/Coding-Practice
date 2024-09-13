@@ -1,0 +1,57 @@
+1. # p1_jacob_jenny.py
+2. 
+3. def line_number(input_file: str, output_file: str) -> None:
+4.    
+5.     try:
+6.         with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
+7.             for i, line in enumerate(infile, start=1):
+8.                 outfile.write(f"{i}. {line}")
+9.     except FileNotFoundError:
+10.         print(f"Error: {input_file} not found.")
+11.         raise
+12. 
+13. def parse_functions(file_name: str) -> tuple:
+14.     
+15.     try:
+16.         with open(file_name, 'r') as file:
+17.             functions = []
+18.             lines = file.readlines()
+19. 
+20.             i = 0
+21.             while i < len(lines):
+22.                 line = lines[i].strip()
+23. 
+24.                 if line.startswith("def "):
+25.                     func_name = line.split("(")[0][4:].strip()
+26.                     func_args = line.split("(")[1].split(")")[0].strip()
+27. 
+28.                     j = i + 1
+29.                     while j < len(lines) and not lines[j].strip().startswith("def "):
+30.                         j += 1
+31. 
+32.                     func_code = ''.join(lines[i + 1:j]).strip()
+33.                     func_code = '\n'.join(line for line in func_code.split('\n') if line and not line.startswith("#"))
+34. 
+35.                     functions.append((i + 1, func_name, func_args, func_code))
+36. 
+37.                     i = j
+38.                 else:
+39.                     i += 1
+40. 
+41.             return tuple(sorted(functions, key=lambda x: x[1]))  # Sort by function name
+42.     except FileNotFoundError:
+43.         print(f"Error: {file_name} not found.")
+44.         raise
+45. 
+46. def main():
+47.     try:
+48.         line_number("p1_jacob_jenny.py", "p1_jacob_jenny_output.txt")
+49. 
+50.         function_info = parse_functions("p1_jacob_jenny.py")
+51.         for func in function_info:
+52.             print(func)
+53.     except Exception as e:
+54.         print(f"An error occurred: {e}")
+55. 
+56. if __name__ == "__main__":
+57.     main()
