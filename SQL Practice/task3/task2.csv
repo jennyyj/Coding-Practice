@@ -1,0 +1,4 @@
+TaskID,Title,Description,DueDate,Completed
+1,"Task 1","Task 1: Walk Dog",2024-04-15,1
+2,"Task 2","Task 2: Finish Assignment",2024-04-20,0
+3,"Task 3","Task 3: Take Trash Out",2024-04-25,0

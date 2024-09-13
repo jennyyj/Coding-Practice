@@ -1,0 +1,94 @@
+-- Create User table
+CREATE TABLE User (
+    UserID INT PRIMARY KEY AUTO_INCREMENT,
+    Username VARCHAR(50) NOT NULL,
+    Password VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) NOT NULL
+);
+
+-- Create Task table
+CREATE TABLE Task (
+    TaskID INT PRIMARY KEY AUTO_INCREMENT,
+    Title VARCHAR(100) NOT NULL,
+    Description TEXT,
+    DueDate DATE,
+    Completed BOOLEAN DEFAULT 0
+);
+
+-- Create ListCategory table
+CREATE TABLE ListCategory (
+    CategoryID INT PRIMARY KEY AUTO_INCREMENT,
+    CategoryName VARCHAR(50) NOT NULL
+);
+
+-- Create User_Task table
+CREATE TABLE User_Task (
+    UserID INT,
+    TaskID INT,
+    PRIMARY KEY (UserID, TaskID),
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (TaskID) REFERENCES Task(TaskID)
+);
+
+-- Create Task_ListCategory table
+CREATE TABLE Task_ListCategory (
+    TaskID INT,
+    CategoryID INT,
+    PRIMARY KEY (TaskID, CategoryID),
+    FOREIGN KEY (TaskID) REFERENCES Task(TaskID),
+    FOREIGN KEY (CategoryID) REFERENCES ListCategory(CategoryID)
+);
+
+-- Sample data for User table
+INSERT INTO User (Username, Password, Email) VALUES
+('user1', 'password1', 'user1@example.com'),
+('user2', 'password2', 'user2@example.com');
+
+-- Sample data for Task table
+INSERT INTO Task (Title, Description, DueDate) VALUES
+('Task 1', 'Task 1: Walk Dog', '2024-04-15'),
+('Task 2', 'Task 2: Finish Assignment', '2024-04-20'),
+('Task 3', 'Task 3: Take Trash Out', '2024-04-25');
+
+-- Sample data for ListCategory table
+INSERT INTO ListCategory (CategoryName) VALUES
+('Personal'),
+('Work');
+
+-- Sample data for User_Task table
+INSERT INTO User_Task (UserID, TaskID) VALUES
+(1, 1),
+(1, 2),
+(2, 2),
+(2, 3);
+
+-- Sample data for Task_ListCategory table
+INSERT INTO Task_ListCategory (TaskID, CategoryID) VALUES
+(1, 1),
+(1, 2),
+(2, 2),
+(3, 1),
+(3, 2);
+
+SELECT t.TaskID, t.Title, t.Description, t.DueDate, t.Completed
+FROM Task t
+JOIN User_Task ut ON t.TaskID = ut.TaskID
+WHERE ut.UserID = 1;
+
+UPDATE Task
+SET Completed = 1
+WHERE TaskID = 1;
+
+SELECT TaskID, Title, Description, DueDate, Completed
+FROM Task
+ORDER BY DueDate;
+
+SELECT t.TaskID, t.Title, t.Description, t.DueDate, t.Completed
+FROM Task t
+JOIN Task_ListCategory tc ON t.TaskID = tc.TaskID
+JOIN ListCategory c ON tc.CategoryID = c.CategoryID
+WHERE c.CategoryName = 'Work';
+
+SELECT TaskID, Title, Description, DueDate, Completed
+FROM Task
+WHERE DueDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY);
